@@ -1,0 +1,35 @@
+nav {
+    display: flex;
+    background-color: lightgray;
+    box-shadow: 2px 3px 5px grey;
+}
+
+.title {
+    margin-left: 2rem;
+    display: flex;
+}
+
+.title h1 {
+    margin-left: 1rem;
+}
+
+img {
+    width: 10%;
+    object-fit: contain;
+}
+
+.anchors {
+    margin-left: 59rem;
+    margin-top: 1.6rem;
+}
+
+a {
+    margin-left: 2rem;
+    text-decoration: none;
+    color: black;
+}
+
+.active {
+    color: blue;
+    font-weight: bold;
+}
