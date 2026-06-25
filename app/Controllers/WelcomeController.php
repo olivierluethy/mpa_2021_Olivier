@@ -95,27 +95,22 @@ INNER JOIN rechnung ON rechnung.fk_personenId = personen.id');
 	}
 
 	public function addPerson(){
-        $rechnungen = new Rechnungen();
-
         // Initialize the session
         session_start();
 
-        require 'app/Views/addPerson.view.php';
-
-		$title = '';
-        $pdo = connectDatabase();
-
-        /* Person hinzufügen */
+        /* Person hinzufügen (erfolgt via Modal auf der Personen-Liste) */
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $rechnungen = new Rechnungen();
             $namen = $_POST['namen'];
             $adresse = $_POST['adresse'];
-			$telefonnummer = $_POST['telefonnummer'];
-			$email = $_POST['email'];
+            $telefonnummer = $_POST['telefonnummer'];
+            $email = $_POST['email'];
 
             $rechnungen->createPerson($namen, $adresse, $telefonnummer, $email);
-
-            header('Location: /rechnungen/personen');
         }
+
+        header('Location: /rechnungen/personen');
+        exit;
 	}
 
 	public function addBill(){
