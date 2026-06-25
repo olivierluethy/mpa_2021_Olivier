@@ -26,10 +26,15 @@ INNER JOIN personen ON personen.id = rechnung.fk_personenId WHERE status = 0');
         $pdo = connectDatabase();
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $statement = $pdo->prepare('SELECT rechnung.id, rechnung.titel, rechnung.beschreibung, rechnung.datei, rechnung.betrag, personen.namen, rechnung.datum, rechnung.status FROM rechnung
+        $statement = $pdo->prepare('SELECT rechnung.id, rechnung.titel, rechnung.beschreibung, rechnung.datei, rechnung.betrag, rechnung.fk_personenId, personen.namen, rechnung.datum, rechnung.status FROM rechnung
 INNER JOIN personen ON personen.id = rechnung.fk_personenId');
         $statement->execute();
         $alle_rechnungen = $statement->fetchAll();
+
+        /* Personen für die Auswahl im Modal */
+        $statement = $pdo->prepare('SELECT id, namen FROM personen ORDER BY namen');
+        $statement->execute();
+        $personen = $statement->fetchAll();
 
 		/* Überfällige offene Rechnungen anzeigen */
 		$pdo = connectDatabase();
@@ -114,38 +119,25 @@ INNER JOIN rechnung ON rechnung.fk_personenId = personen.id');
 	}
 
 	public function addBill(){
-        $rechnungen = new Rechnungen();
-
         // Initialize the session
         session_start();
 
-        /* Personen anzeigen */
-        $pdo = connectDatabase();
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        $statement = $pdo->prepare('SELECT id, namen FROM personen');
-        $statement->execute();
-        $personen = $statement->fetchAll();
-
-		require 'app/Views/addBill.view.php';
-
-		$title = '';
-        $pdo = connectDatabase();
-
-        /* Rechnung hinzufügen */
+        /* Rechnung hinzufügen (erfolgt via Modal auf der Rechnungen-Liste) */
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $rechnungen = new Rechnungen();
             $titel = $_POST['titel'];
             $beschreibung = $_POST['beschreibung'];
-			$betrag = $_POST['betrag'];
-			$person = $_POST['person'];
+            $betrag = $_POST['betrag'];
+            $person = $_POST['person'];
             $datei = $_POST['datei'];
             $datum = $_POST['datum'];
             $status = 0;
 
             $rechnungen->createBill($titel, $beschreibung, $betrag, $person, $datei, $datum, $status);
-
-            header('Location: /rechnungen/rechnungen');
         }
+
+        header('Location: /rechnungen/rechnungen');
+        exit;
 	}
 
     public function editPerson(){
