@@ -141,34 +141,18 @@ INNER JOIN rechnung ON rechnung.fk_personenId = personen.id');
 	}
 
     public function editPerson(){
-        $rechnungen = new Rechnungen();
-
         // Initialize the session
         session_start();
 
-        /* Person bearbeiten */
-        $id = $_GET['id'];
-
-        $title = '';
-        $pdo = connectDatabase();
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+        /* Person bearbeiten (erfolgt via Modal auf der Personen-Liste) */
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $namen = $_POST['namen'];
-            $adresse = $_POST['adresse'];
-			$telefonnummer = $_POST['telefonnummer'];
-			$email = $_POST['email'];
-
-            $rechnungen->changePerson($namen, $adresse, $telefonnummer, $email, $id);
-
-            header('Location: /rechnungen/personen');
-        }else{
-            $statement = $pdo->prepare('SELECT * FROM personen WHERE id = :id');
-            $statement->bindParam(':id', $id);
-            $statement->execute();
-            $personen = $statement->fetchAll();
+            $rechnungen = new Rechnungen();
+            $id = $_GET['id'];
+            $rechnungen->changePerson($_POST['namen'], $_POST['adresse'], $_POST['telefonnummer'], $_POST['email'], $id);
         }
-        require 'app/Views/editPerson.view.php';
+
+        header('Location: /rechnungen/personen');
+        exit;
     }
 
     public function deletePerson(){
@@ -192,43 +176,18 @@ INNER JOIN rechnung ON rechnung.fk_personenId = personen.id');
     }
 
     public function editBill(){
-        $rechnungen = new Rechnungen();
-
         // Initialize the session
         session_start();
 
-        /* Rechnung bearbeiten */
-        $id = $_GET['id'];
-
-        $title = '';
-        $pdo = connectDatabase();
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+        /* Rechnung bearbeiten (erfolgt via Modal auf der Rechnungen-Liste) */
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $titel = $_POST['titel'];
-            $beschreibung = $_POST['beschreibung'];
-			$betrag = $_POST['betrag'];
-			$person = $_POST['person'];
-            $datum = $_POST['datum'];
-
-            $rechnungen->changeBill($titel, $beschreibung, $betrag, $person, $datum, $id);
-
-            header('Location: /rechnungen/rechnungen');
-        }else{
-            $statement = $pdo->prepare('SELECT * FROM rechnung WHERE id = :id');
-            $statement->bindParam(':id', $id);
-            $statement->execute();
-            $rechnung = $statement->fetchAll();
-
-            /* Personen anzeigen */
-            $pdo = connectDatabase();
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            $statement = $pdo->prepare('SELECT * FROM personen');
-            $statement->execute();
-            $personen = $statement->fetchAll();
+            $rechnungen = new Rechnungen();
+            $id = $_GET['id'];
+            $rechnungen->changeBill($_POST['titel'], $_POST['beschreibung'], $_POST['betrag'], $_POST['person'], $_POST['datum'], $id);
         }
-        require 'app/Views/editBill.view.php';
+
+        header('Location: /rechnungen/rechnungen');
+        exit;
     }
 
     public function deleteBill(){
