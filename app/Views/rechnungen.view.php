@@ -5,178 +5,122 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     exit;
 }
 
-$anzahl_rechnungen_insgesammt = 0;
-$anzahl_ueberfellig_offene_rechnungen = 0;
-$anzahl_nicht_ueberfellig_offene_rechnungen = 0;
-$anzahl_erledigte_rechnungen = 0;
-
-foreach ($alle_rechnungen as $alle_rechnungenn){
-    $anzahl_rechnungen_insgesammt++;
-}
-
-foreach ($ueberfellig_offene_rechnungen as $ueberfellig_offene_rechnungenn){
-    $anzahl_ueberfellig_offene_rechnungen++;
-}
-
-foreach ($nicht_ueberfellige_offene_rechnungen as $nicht_ueberfellige_offene_rechnungenn){
-    $anzahl_nicht_ueberfellig_offene_rechnungen++;
-}
-
-foreach ($erledigte_rechnungen as $erledigte_rechnungenn){
-    $anzahl_erledigte_rechnungen++;
-}
-?>
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Rechnungen</title>
-    <!-- CSS Import -->
-    <link rel="stylesheet" href="../public/css/general.css">
-    <link rel="stylesheet" href="../public/css/navigation.css">
-    <link rel="stylesheet" href="../public/css/table.css">
-    
-    <link rel="shortcut icon" href="../images/icon.png">
-    <meta name="author" content="Olivier Luethy">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-</head>
-<body>
-
-<nav>
-    <div class="title">
-        <img src="../images/icon.png" alt="">
-        <h1>Rechnungen verwalten</h1>
-    </div>
-
-    <div class="anchors">
-        <a href="../rechnungen/uebersicht">Übersicht</a>
-        <a class="active" href="../rechnungen/rechnungen">Rechnungen</a>
-        <a href="../rechnungen/personen">Personen</a>
-        <?php
-        if(isset($_SESSION['loggedin']) == true){
-            echo "<a href='../rechnungen/logout'>Logout</a>";
-        }else{
-            echo "<a href='../rechnungen/login'>Login</a>";
-        }?>
-    </div>
-</nav>
-
-<main>
-    <h1><u>Rechnungen</u></h1>
-
-    <?php
-    if ($anzahl_rechnungen_insgesammt > 0){
-        if ($anzahl_ueberfellig_offene_rechnungen > 0){
-            /* Anzahl überfällige und offene Rechnungen */
-            echo "<p style='color: red; font-weight: bold;'>Anzahl offen und überfällig ($anzahl_ueberfellig_offene_rechnungen)</p>";
-
-            echo "<table>
-                <tr>
-                    <th>Titel</th>
-                    <th>Beschreibung</th>
-                    <th>Zu zahlender Betrag</th>
-                    <th>Person</th>
-                    <th>Datum</th>
-                    <th>Datei</th>
-                    <th>Bearbeiten</th>
-                    <th>Löschen</th>
-                    <th>Begleichen</th>
-                    <th>Mahnen</th>
-                </tr>";
-
-            foreach ($ueberfellig_offene_rechnungen as $ueberfellig_offene_rechnungenn){
-                echo "<tr>";
-                echo "<td style='background-color: lightcoral;'>" . $ueberfellig_offene_rechnungenn['titel'] . "</td>";
-                echo "<td style='background-color: lightcoral;'>" . $ueberfellig_offene_rechnungenn['beschreibung'] . "</td>";
-                echo "<td style='background-color: lightcoral;'>" . $ueberfellig_offene_rechnungenn['betrag'] . ".-</td>";
-                echo "<td style='background-color: lightcoral;'>" . $ueberfellig_offene_rechnungenn['namen'] . "</td>";
-                echo "<td style='background-color: lightcoral;'>" . $ueberfellig_offene_rechnungenn['datum'] . "</td>";
-                echo "<td style='background-color: lightcoral;'>" . $ueberfellig_offene_rechnungenn['datei'] . "</td>";
-                echo "<td style='background-color: lightcoral;'><a href='editBill?id=" . $ueberfellig_offene_rechnungenn['id'] . "'><button class='edit'><i class='fas fa-edit'></i> Bearbeiten</button></a></td>";
-                echo "<td style='background-color: lightcoral;'><a href='deleteBill?id=" . $ueberfellig_offene_rechnungenn['id'] . "'><button class='delete'><i class='fas fa-trash'></i> Löschen</button></a></td>";
-                echo "<td style='background-color: lightcoral;'><a href='begleichen?id=" . $ueberfellig_offene_rechnungenn['id'] . "'><button class='Tofinish'><i class='fas fa-money-check'></i> Begleichen</button></a></td>";
-                echo "<form action='addReminder' method='post'>";
-                echo "<input style='display: none;' type='text' id='id' name='id' value=" . $ueberfellig_offene_rechnungenn['id'] . ">";
-                echo "<td style='background-color: lightcoral;'><button type='submit' class='mahnen'><i class='fas fa-stopwatch'></i> Mahnen</button></td>";
-                echo "</form>";
-                echo "</tr>";
-            }
-        echo "</table><br><br>";  
-        }
-        if ($anzahl_nicht_ueberfellig_offene_rechnungen > 0){
-            /* Anzahl Rechnungen die nicht überfällig aber offen sind */
-            echo "<p style='color: green; font-weight: bold;'>Anzahl offen und nicht überfällig ($anzahl_nicht_ueberfellig_offene_rechnungen)</p>";
-
-            echo "<table>
-                <tr>
-                    <th>Titel</th>
-                    <th>Beschreibung</th>
-                    <th>Zu zahlender Betrag</th>
-                    <th>Person</th>
-                    <th>Datum</th>
-                    <th>Datei</th>
-                    <th>Bearbeiten</th>
-                    <th>Löschen</th>
-                    <th>Begleichen</th>
-                </tr>";
-
-            foreach ($nicht_ueberfellige_offene_rechnungen as $nicht_ueberfellige_offene_rechnungenn){
-                echo "<tr>";
-                echo "<td style='background-color: lightgreen;'>" . $nicht_ueberfellige_offene_rechnungenn['titel'] . "</td>";
-                echo "<td style='background-color: lightgreen;'>" . $nicht_ueberfellige_offene_rechnungenn['beschreibung'] . "</td>";
-                echo "<td style='background-color: lightgreen;'>" . $nicht_ueberfellige_offene_rechnungenn['betrag'] . ".-</td>";
-                echo "<td style='background-color: lightgreen;'>" . $nicht_ueberfellige_offene_rechnungenn['namen'] . "</td>";
-                echo "<td style='background-color: lightgreen;'>" . $nicht_ueberfellige_offene_rechnungenn['datum'] . "</td>";
-                echo "<td style='background-color: lightgreen;'>" . $nicht_ueberfellige_offene_rechnungenn['datei'] . "</td>";
-                echo "<td style='background-color: lightgreen;'><a href='editBill?id=" . $nicht_ueberfellige_offene_rechnungenn['id'] . "'><button class='edit'><i class='fas fa-edit'></i> Bearbeiten</button></a></td>";
-                echo "<td style='background-color: lightgreen;'><a href='deleteBill?id=" . $nicht_ueberfellige_offene_rechnungenn['id'] . "'><button class='delete'><i class='fas fa-trash'></i> Löschen</button></a></td>";
-                echo "<td style='background-color: lightgreen;'><a href='begleichen?id=" . $nicht_ueberfellige_offene_rechnungenn['id'] . "'><button class='Tofinish'><i class='fas fa-money-check'></i> Begleichen</button></a></td>";
-                echo "</tr>";
-            }
-            echo "</table><br><br>";
-        }
-        if ($anzahl_erledigte_rechnungen > 0){
-            /* Beglichene Rechnungen */
-            echo "<p style='font-weight: bold;'>Anzahl beglichener Rechnungen ($anzahl_erledigte_rechnungen)</p>";
-
-            echo "<table>
-                <tr>
-                    <th>Titel</th>
-                    <th>Beschreibung</th>
-                    <th>Zu zahlender Betrag</th>
-                    <th>Person</th>
-                    <th>Datum</th>
-                    <th>Datei</th>
-                    <th>Bearbeiten</th>
-                    <th>Löschen</th>
-                    <th>Begleichen</th>
-                </tr>";
-
-            foreach ($erledigte_rechnungen as $erledigte_rechnungenn){
-                echo "<tr>";
-                echo "<td>" . $erledigte_rechnungenn['titel'] . "</td>";
-                echo "<td>" . $erledigte_rechnungenn['beschreibung'] . "</td>";
-                echo "<td>" . $erledigte_rechnungenn['betrag'] . ".-</td>";
-                echo "<td>" . $erledigte_rechnungenn['namen'] . "</td>";
-                echo "<td>" . $erledigte_rechnungenn['datum'] . "</td>";
-                echo "<td>" . $erledigte_rechnungenn['datei'] . "</td>";
-                echo "<td><a href='editBill?id=" . $erledigte_rechnungenn['id'] . "'><button class='edit'><i class='fas fa-edit'></i> Bearbeiten</button></a></td>";
-                echo "<td><a href='deleteBill?id=" . $erledigte_rechnungenn['id'] . "'><button class='delete'><i class='fas fa-trash'></i> Löschen</button></a></td>";
-                echo "<td><button class='finish'><i class='fas fa-check'></i> Beglichen</button></td>";
-                echo "</tr>";
-            }
-            echo "</table><br><br>";
-        }
-    }else{
-        echo "<h1 style='color: red';>Es wurde noch keine Rechnung hinzugefügt</h1>";
+/**
+ * Bestimmt die Kategorie einer Rechnung: beglichen | ueberfaellig | offen.
+ * Überfällig = noch offen UND Datum + 1 Tag liegt in der Vergangenheit.
+ */
+function rechnungKategorie(array $r): string {
+    if ((int)$r['status'] === 1) {
+        return 'beglichen';
     }
+    try {
+        $faellig = (new DateTime($r['datum']))->modify('+1 day');
+        if ($faellig < new DateTime()) {
+            return 'ueberfaellig';
+        }
+    } catch (Exception $e) {}
+    return 'offen';
+}
 
-    /* Rechnung hinzufügen */
-    echo "<button class='hinzufuegen' onclick='addBill()'><i class='fas fa-plus'></i> Rechnung hinzufügen</button>";
-    ?>
-    
-</main>
+$kategorien = ['offen' => 0, 'ueberfaellig' => 0, 'beglichen' => 0];
+foreach ($alle_rechnungen as $r) {
+    $kategorien[rechnungKategorie($r)]++;
+}
 
-<script src="../public/js/app.js"></script>
-</body>
-</html>
+// Badge-Styles je Kategorie (dezente Dark-Mode-Akzente statt Vollflächen).
+$badge = [
+    'offen'        => 'bg-amber-500/15 text-amber-300 ring-1 ring-inset ring-amber-500/30',
+    'ueberfaellig' => 'bg-rose-500/15 text-rose-300 ring-1 ring-inset ring-rose-500/30',
+    'beglichen'    => 'bg-emerald-500/15 text-emerald-300 ring-1 ring-inset ring-emerald-500/30',
+];
+$badgeLabel = ['offen' => 'Offen', 'ueberfaellig' => 'Überfällig', 'beglichen' => 'Beglichen'];
+$accent = [
+    'offen'        => 'border-l-2 border-amber-500/50',
+    'ueberfaellig' => 'border-l-2 border-rose-500/60',
+    'beglichen'    => 'border-l-2 border-emerald-500/40',
+];
+
+$pageTitle = 'Rechnungen';
+$active = 'rechnungen';
+require __DIR__ . '/partials/head.php';
+require __DIR__ . '/partials/nav.php';
+?>
+
+<div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <div>
+        <h1 class="text-2xl font-semibold text-neutral-100">Rechnungen</h1>
+        <p class="mt-1 text-sm text-neutral-400"><?= count($alle_rechnungen) ?> Rechnungen insgesamt</p>
+    </div>
+    <a href="/rechnungen/addBill"
+       class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-900/30 transition hover:bg-indigo-500">
+        <i class="fas fa-plus"></i> Rechnung hinzufügen
+    </a>
+</div>
+
+<?php if (count($alle_rechnungen) > 0): ?>
+    <div class="overflow-hidden rounded-xl border border-neutral-700 bg-neutral-800 shadow-xl shadow-black/20">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b border-neutral-700 text-left text-xs font-semibold uppercase tracking-wide text-neutral-400">
+                        <th class="px-4 py-3">Titel</th>
+                        <th class="px-4 py-3">Beschreibung</th>
+                        <th class="px-4 py-3">Betrag</th>
+                        <th class="px-4 py-3">Person</th>
+                        <th class="px-4 py-3">Datum</th>
+                        <th class="px-4 py-3">Status</th>
+                        <th class="px-4 py-3 text-right">Aktionen</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-neutral-700/60">
+                    <?php foreach ($alle_rechnungen as $r): ?>
+                        <?php $kat = rechnungKategorie($r); ?>
+                        <tr class="transition-colors hover:bg-neutral-700/30" data-category="<?= $kat ?>">
+                            <td class="px-4 py-3 font-medium text-neutral-100 <?= $accent[$kat] ?>"><?= e($r['titel']) ?></td>
+                            <td class="max-w-xs truncate px-4 py-3 text-neutral-300" title="<?= e($r['beschreibung']) ?>"><?= e($r['beschreibung']) ?></td>
+                            <td class="whitespace-nowrap px-4 py-3 font-medium text-neutral-200">CHF <?= number_format((float)$r['betrag'], 0, '.', "'") ?>.&ndash;</td>
+                            <td class="px-4 py-3 text-neutral-300"><?= e($r['namen']) ?></td>
+                            <td class="whitespace-nowrap px-4 py-3 text-neutral-300"><?= e(formatDate($r['datum'])) ?></td>
+                            <td class="px-4 py-3">
+                                <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium <?= $badge[$kat] ?>"><?= $badgeLabel[$kat] ?></span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center justify-end gap-2">
+                                    <a href="/rechnungen/editBill?id=<?= (int)$r['id'] ?>"
+                                       class="inline-flex items-center gap-1.5 rounded-md bg-neutral-600 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-neutral-500" title="Bearbeiten">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <?php if ($kat !== 'beglichen'): ?>
+                                        <a href="/rechnungen/begleichen?id=<?= (int)$r['id'] ?>"
+                                           class="inline-flex items-center gap-1.5 rounded-md bg-emerald-600/90 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-emerald-500" title="Begleichen">
+                                            <i class="fas fa-money-check"></i>
+                                        </a>
+                                    <?php endif; ?>
+                                    <?php if ($kat === 'ueberfaellig'): ?>
+                                        <form action="/rechnungen/addReminder" method="post" class="inline">
+                                            <input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
+                                            <button type="submit"
+                                                    class="inline-flex items-center gap-1.5 rounded-md bg-amber-600/90 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-amber-500" title="Mahnen">
+                                                <i class="fas fa-stopwatch"></i>
+                                            </button>
+                                        </form>
+                                    <?php endif; ?>
+                                    <a href="/rechnungen/deleteBill?id=<?= (int)$r['id'] ?>"
+                                       class="inline-flex items-center gap-1.5 rounded-md bg-rose-600/90 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-rose-500" title="Löschen">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<?php else: ?>
+    <div class="rounded-xl border border-dashed border-neutral-700 bg-neutral-800/50 p-12 text-center">
+        <p class="text-neutral-400">Es wurde noch keine Rechnung hinzugefügt.</p>
+    </div>
+<?php endif; ?>
+
+<?php require __DIR__ . '/partials/foot.php'; ?>
