@@ -5,159 +5,82 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     exit;
 }
 
-$anzahl_personen_total = 0;
-$anzahl_personen_zugeteilt = 0;
-$anzahl_personen_nicht_zugeteilt = 0;
-
-foreach ($personen as $person){
-    $anzahl_personen_total++;
+// IDs der Personen, die bereits einer Rechnung zugeteilt sind (nicht löschbar wegen FK).
+$zugeteilt_ids = [];
+foreach ($personen_schon_zugeteilt as $p) {
+    $zugeteilt_ids[$p['id']] = true;
 }
 
-foreach ($personen_schon_zugeteilt as $personen_schon_zugeteiltt){
-    $anzahl_personen_zugeteilt++;
-}
-
-foreach ($personen_nicht_zugeteilt as $personen_nicht_zugeteiltt){
-    $anzahl_personen_nicht_zugeteilt++;
-}
+$pageTitle = 'Personen';
+$active = 'personen';
+require __DIR__ . '/partials/head.php';
+require __DIR__ . '/partials/nav.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Personen</title>
-    <!-- CSS Import -->
-    <link rel="stylesheet" href="../public/css/general.css">
-    <link rel="stylesheet" href="../public/css/navigation.css">
-    <link rel="stylesheet" href="../public/css/table.css">
-    
-    <link rel="shortcut icon" href="../images/icon.png">
-    <meta name="author" content="Olivier Luethy">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-</head>
-<body>
-
-<nav>
-    <div class="title">
-        <img src="../images/icon.png" alt="">
-        <h1>Rechnungen verwalten</h1>
+<div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <div>
+        <h1 class="text-2xl font-semibold text-neutral-100">Personen</h1>
+        <p class="mt-1 text-sm text-neutral-400"><?= count($personen) ?> Personen erfasst</p>
     </div>
+    <a href="/rechnungen/addPerson"
+       class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-900/30 transition hover:bg-indigo-500">
+        <i class="fas fa-plus"></i> Person hinzufügen
+    </a>
+</div>
 
-    <div class="anchors">
-        <a href="../rechnungen/uebersicht">Übersicht</a>
-        <a href="../rechnungen/rechnungen">Rechnungen</a>
-        <a class="active" href="../rechnungen/personen">Personen</a>
-        <?php
-        if(isset($_SESSION['loggedin']) == true){
-            echo "<a href='../rechnungen/logout'>Logout</a>";
-        }else{
-            echo "<a href='../rechnungen/login'>Login</a>";
-        }?>
+<?php if (count($personen) > 0): ?>
+    <div class="overflow-hidden rounded-xl border border-neutral-700 bg-neutral-800 shadow-xl shadow-black/20">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b border-neutral-700 text-left text-xs font-semibold uppercase tracking-wide text-neutral-400">
+                        <th class="px-4 py-3">Name</th>
+                        <th class="px-4 py-3">Adresse</th>
+                        <th class="px-4 py-3">Telefonnummer</th>
+                        <th class="px-4 py-3">E-Mail</th>
+                        <th class="px-4 py-3 text-right">Aktionen</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-neutral-700/60">
+                    <?php foreach ($personen as $person): ?>
+                        <?php $istZugeteilt = isset($zugeteilt_ids[$person['id']]); ?>
+                        <tr class="transition-colors hover:bg-neutral-700/30">
+                            <td class="px-4 py-3 font-medium text-neutral-100"><?= e($person['namen']) ?></td>
+                            <td class="px-4 py-3 text-neutral-300"><?= e($person['adresse']) ?></td>
+                            <td class="px-4 py-3 text-neutral-300"><?= e($person['telefonnummer'] ?? '') ?></td>
+                            <td class="px-4 py-3 text-neutral-300"><?= e($person['email']) ?></td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center justify-end gap-2">
+                                    <a href="/rechnungen/uebersichtPerson?id=<?= (int)$person['id'] ?>"
+                                       class="inline-flex items-center gap-1.5 rounded-md bg-sky-600/90 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-sky-500">
+                                        <i class="fas fa-eye"></i> Übersicht
+                                    </a>
+                                    <a href="/rechnungen/editPerson?id=<?= (int)$person['id'] ?>"
+                                       class="inline-flex items-center gap-1.5 rounded-md bg-neutral-600 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-neutral-500">
+                                        <i class="fas fa-edit"></i> Bearbeiten
+                                    </a>
+                                    <?php if (!$istZugeteilt): ?>
+                                        <a href="/rechnungen/deletePerson?id=<?= (int)$person['id'] ?>"
+                                           class="inline-flex items-center gap-1.5 rounded-md bg-rose-600/90 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-rose-500">
+                                            <i class="fas fa-trash"></i> Löschen
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="inline-flex items-center gap-1.5 rounded-md border border-neutral-700 px-2.5 py-1.5 text-xs font-medium text-neutral-500" title="Person ist Rechnungen zugeordnet">
+                                            <i class="fas fa-lock"></i> verknüpft
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
-</nav>
+<?php else: ?>
+    <div class="rounded-xl border border-dashed border-neutral-700 bg-neutral-800/50 p-12 text-center">
+        <p class="text-neutral-400">Es wurde noch keine Person hinzugefügt.</p>
+    </div>
+<?php endif; ?>
 
-<main>
-    <h1><u>Personen</u></h1>
-
-    <?php
-    /* Exisieren Personen? */
-    if($anzahl_personen_total > 0){
-        /* Wenn ja wird kontrolliert, ob es Personen die schon zugeteilt wurden und auch die die nicht zugeteilt wurden existiert */
-        if ($anzahl_personen_zugeteilt > 0 && $anzahl_personen_nicht_zugeteilt > 0){
-            /* Alle Personen werden ausgegeben */
-            echo "<table>
-                <tr>
-                    <th>Namen</th>
-                    <th>Adresse</th>
-                    <th>Telefonnummer</th>
-                    <th>Email</th>
-                    <th>Bearbeiten</th>
-                    <th>Löschen</th>
-                    <th>Übersicht</th>
-                </tr>";
-
-            foreach ($personen_schon_zugeteilt as $personen_schon_zugeteiltt){
-                echo "<tr>";
-                echo "<td>" . $personen_schon_zugeteiltt['namen'] . "</td>";
-                echo "<td>" . $personen_schon_zugeteiltt['adresse'] . "</td>";
-                echo "<td>" . $personen_schon_zugeteiltt['telefonnummer'] . "</td>";
-                echo "<td>" . $personen_schon_zugeteiltt['email'] . "</td>";
-                echo "<td></td>";
-                echo "<td></td>";
-                echo "<td><a href='uebersichtPerson?id=" . $personen_schon_zugeteiltt['id'] . "'><button class='uebersicht'><i class='fas fa-eye'></i> Übersicht anschauen</button></a></td>";
-                echo "</tr>";
-            }
-
-            foreach ($personen_nicht_zugeteilt as $personen_nicht_zugeteiltt){
-                echo "<tr>";
-                echo "<td>" . $personen_nicht_zugeteiltt['namen'] . "</td>";
-                echo "<td>" . $personen_nicht_zugeteiltt['adresse'] . "</td>";
-                echo "<td>" . $personen_nicht_zugeteiltt['telefonnummer'] . "</td>";
-                echo "<td>" . $personen_nicht_zugeteiltt['email'] . "</td>";
-                echo "<td><a href='editPerson?id=" . $personen_nicht_zugeteiltt['id'] . "'><button class='edit'><i class='fas fa-edit'></i> Bearbeiten</button></a></td>";
-                echo "<td><a href='deletePerson?id=" . $personen_nicht_zugeteiltt['id'] . "'><button class='delete'><i class='fas fa-trash'></i> Löschen</button></a></td>";
-                echo "<td></td>";
-                echo "</tr>";
-            }
-        }
-        /* Existieren nur Personen die zugeteilt wurden? */
-        if($anzahl_personen_zugeteilt > 0 && $anzahl_personen_nicht_zugeteilt == 0){
-            /* Daten der zugeteilten Personen werden ausgegeben */
-            echo "<table>
-                <tr>
-                    <th>Namen</th>
-                    <th>Adresse</th>
-                    <th>Telefonnummer</th>
-                    <th>Email</th>
-                    <th>Übersicht</th>
-                </tr>";
-
-            foreach ($personen_schon_zugeteilt as $personen_schon_zugeteiltt){
-                echo "<tr>";
-                echo "<td>" . $personen_schon_zugeteiltt['namen'] . "</td>";
-                echo "<td>" . $personen_schon_zugeteiltt['adresse'] . "</td>";
-                echo "<td>" . $personen_schon_zugeteiltt['telefonnummer'] . "</td>";
-                echo "<td>" . $personen_schon_zugeteiltt['email'] . "</td>";
-                echo "<td><a href='uebersichtPerson?id=" . $personen_schon_zugeteiltt['id'] . "'><button class='uebersicht'><i class='fas fa-eye'></i> Übersicht anschauen</button></a></td>";
-                echo "</tr>";
-            }
-        }
-        /* Existieren nur Personen die nicht zugeteilt wurden? */
-        if ($anzahl_personen_zugeteilt == 0 && $anzahl_personen_nicht_zugeteilt > 0){
-            /* Daten der nicht zugeteilten Personen werden ausgegeben */
-            echo "<table>
-                <tr>
-                    <th>Namen</th>
-                    <th>Adresse</th>
-                    <th>Telefonnummer</th>
-                    <th>Email</th>
-                    <th>Bearbeiten</th>
-                    <th>Löschen</th>
-                </tr>";
-
-            foreach ($personen_nicht_zugeteilt as $personen_nicht_zugeteiltt){
-                echo "<tr>";
-                echo "<td>" . $personen_nicht_zugeteiltt['namen'] . "</td>";
-                echo "<td>" . $personen_nicht_zugeteiltt['adresse'] . "</td>";
-                echo "<td>" . $personen_nicht_zugeteiltt['telefonnummer'] . "</td>";
-                echo "<td>" . $personen_nicht_zugeteiltt['email'] . "</td>";
-                echo "<td><a href='editPerson?id=" . $personen_nicht_zugeteiltt['id'] . "'><button class='edit'><i class='fas fa-edit'></i> Bearbeiten</button></a></td>";
-                echo "<td><a href='deletePerson?id=" . $personen_nicht_zugeteiltt['id'] . "'><button class='delete'><i class='fas fa-trash'></i> Löschen</button></a></td>";
-                echo "</tr>";
-            }
-        }
-        
-        echo "</table>";
-    }
-    /* Es existieren noch keine Personen */
-    else{
-        echo "<h1 style='color: red';>Es wurde noch keine Person hinzugefügt</h1>";
-    }
-    echo "<button class='hinzufuegen' onclick='addPerson()'><i class='fas fa-plus'></i> Person hinzufügen</button>";
-    ?>
-</main>
-
-<script src="../public/js/app.js"></script>
-</body>
-</html>
+<?php require __DIR__ . '/partials/foot.php'; ?>
