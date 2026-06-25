@@ -85,43 +85,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Close connection
     mysqli_close($link);
 }
+
+$pageTitle = 'Login';
+require __DIR__ . '/partials/head.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-neutral-900 via-neutral-900 to-neutral-800 px-4">
+    <div class="w-full max-w-sm rounded-2xl border border-neutral-700 bg-neutral-800 p-8 shadow-2xl shadow-black/40">
+        <div class="mb-6 flex flex-col items-center gap-3 text-center">
+            <img src="/images/icon.png" alt="" class="h-14 w-14 object-contain">
+            <h1 class="text-2xl font-semibold text-neutral-100">Anmelden</h1>
+            <p class="text-sm text-neutral-400">Bitte geben Sie Ihre Anmeldedaten ein, um sich einzuloggen.</p>
+        </div>
 
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
-    <link rel="shortcut icon" href="../images/icon.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="shortcut icon" href="../images/icon.png">
-    <link rel="stylesheet" href="../public/css/login.css">
-    <meta name="author" content="Olivier Luethy">
-</head>
+        <form action="login" method="post" class="space-y-5">
+            <div>
+                <label for="email" class="mb-1.5 block text-sm font-medium text-neutral-300">E-Mail</label>
+                <input type="text" name="email" id="email" autocomplete="username"
+                       class="w-full rounded-lg border border-neutral-600 bg-neutral-900 px-3 py-2.5 text-neutral-100 placeholder-neutral-500 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/40">
+                <?php if ($email_err): ?>
+                    <p class="mt-1.5 text-sm font-medium text-rose-400"><?= e($email_err) ?></p>
+                <?php endif; ?>
+            </div>
 
-<body>
-    <div class="wrapper">
+            <div>
+                <label for="password" class="mb-1.5 block text-sm font-medium text-neutral-300">Passwort</label>
+                <input type="password" name="password" id="password" autocomplete="current-password"
+                       class="w-full rounded-lg border border-neutral-600 bg-neutral-900 px-3 py-2.5 text-neutral-100 placeholder-neutral-500 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/40">
+                <?php if ($password_err): ?>
+                    <p class="mt-1.5 text-sm font-medium text-rose-400"><?= e($password_err) ?></p>
+                <?php endif; ?>
+            </div>
 
-        <h2>Login</h2>
-        <p>Bitte geben Sie Ihre Anmeldedaten ein, um sich einzuloggen.</p>
-        <form action="login" method="post">
-            <div class="form-group">
-                <label>Email</label>
-                <input type="text" name="email" id="email" class="form-control">
-                <span style='color: red; font-weight:bold;'; class="help-block"><?php echo $email_err; ?></span>
-            </div>
-            <div class="form-group">
-                <label>Passwort</label>
-                <input type="password" name="password" id="password" class="form-control">
-                <span style='color: red; font-weight:bold;'; class="help-block"><?php echo $password_err; ?></span>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Login</button>
-            </div>
+            <button type="submit"
+                    class="flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 font-semibold text-white transition hover:bg-indigo-500 focus:ring-2 focus:ring-indigo-500/50">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
         </form>
     </div>
-</body>
+</div>
 
+</body>
 </html>
