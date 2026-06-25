@@ -57,7 +57,25 @@ require __DIR__ . '/partials/nav.php';
     </a>
 </div>
 
+<?php
+$tabs = [
+    'alle'         => ['Alle', count($alle_rechnungen)],
+    'offen'        => ['Offen', $kategorien['offen']],
+    'ueberfaellig' => ['Überfällig', $kategorien['ueberfaellig']],
+    'beglichen'    => ['Beglichen', $kategorien['beglichen']],
+];
+?>
 <?php if (count($alle_rechnungen) > 0): ?>
+    <div id="rechnung-tabs" class="mb-4 inline-flex flex-wrap gap-1 rounded-lg border border-neutral-700 bg-neutral-800/60 p-1 text-sm">
+        <?php foreach ($tabs as $key => [$label, $cnt]): $on = $key === 'alle'; ?>
+            <button type="button" data-filter="<?= $key ?>"
+                    class="filter-tab flex items-center gap-2 rounded-md px-3 py-1.5 font-medium transition <?= $on ? 'bg-neutral-700 text-white' : 'text-neutral-400 hover:text-white' ?>">
+                <?= $label ?>
+                <span class="rounded-full bg-neutral-900/60 px-1.5 py-0.5 text-xs text-neutral-400"><?= $cnt ?></span>
+            </button>
+        <?php endforeach; ?>
+    </div>
+
     <div class="overflow-hidden rounded-xl border border-neutral-700 bg-neutral-800 shadow-xl shadow-black/20">
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
@@ -117,6 +135,35 @@ require __DIR__ . '/partials/nav.php';
             </table>
         </div>
     </div>
+    <div id="rechnung-empty" class="hidden rounded-xl border border-dashed border-neutral-700 bg-neutral-800/50 p-12 text-center">
+        <p class="text-neutral-400">Keine Rechnungen in dieser Kategorie.</p>
+    </div>
+
+    <script>
+    (function () {
+        const tabs = document.querySelectorAll('#rechnung-tabs .filter-tab');
+        const rows = document.querySelectorAll('tbody tr[data-category]');
+        const empty = document.getElementById('rechnung-empty');
+        function apply(filter) {
+            let visible = 0;
+            rows.forEach(function (row) {
+                const show = filter === 'alle' || row.dataset.category === filter;
+                row.classList.toggle('hidden', !show);
+                if (show) visible++;
+            });
+            empty.classList.toggle('hidden', visible !== 0);
+            tabs.forEach(function (tab) {
+                const on = tab.dataset.filter === filter;
+                tab.classList.toggle('bg-neutral-700', on);
+                tab.classList.toggle('text-white', on);
+                tab.classList.toggle('text-neutral-400', !on);
+            });
+        }
+        tabs.forEach(function (tab) {
+            tab.addEventListener('click', function () { apply(tab.dataset.filter); });
+        });
+    })();
+    </script>
 <?php else: ?>
     <div class="rounded-xl border border-dashed border-neutral-700 bg-neutral-800/50 p-12 text-center">
         <p class="text-neutral-400">Es wurde noch keine Rechnung hinzugefügt.</p>
