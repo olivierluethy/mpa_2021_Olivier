@@ -1,0 +1,60 @@
+# Mini PA – full Docker stack: web app + MariaDB + phpMyAdmin
+#
+#   App:        http://localhost:8092/mpa_2021_Olivier/rechnungen/login
+#   phpMyAdmin: http://localhost:8095   (server: db,  user: root / pass: root)
+#   MariaDB:    localhost:3399          (for external DB tools, optional)
+#
+services:
+  web:
+    build: .
+    ports:
+      - "8092:80"
+    environment:
+      DB_HOST: db
+      DB_NAME: minipa
+      DB_USER: root
+      DB_PASS: root
+    volumes:
+      # Live bind-mount: edit code on the host, refresh the browser.
+      - .:/var/www/html/mpa_2021_Olivier
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: mariadb:10.6
+    ports:
+      - "3399:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_ROOT_HOST: "%"
+      MARIADB_DATABASE: minipa
+    volumes:
+      - db_data:/var/lib/mysql
+      # Init scripts run once, in alphabetical order, on first startup.
+      - ./docker/initdb/00-grant-root.sql:/docker-entrypoint-initdb.d/00-grant-root.sql:ro
+      - ./minipa.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./docker/initdb/02-mock-data.sql:/docker-entrypoint-initdb.d/02-mock-data.sql:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  phpmyadmin:
+    image: phpmyadmin:5
+    ports:
+      - "8095:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      UPLOAD_LIMIT: 64M
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  db_data:

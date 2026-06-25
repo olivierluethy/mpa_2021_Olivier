@@ -114,7 +114,7 @@ INNER JOIN rechnung ON rechnung.fk_personenId = personen.id');
 
             $rechnungen->createPerson($namen, $adresse, $telefonnummer, $email);
 
-            header('Location: http://localhost/mpa_2021_Olivier/rechnungen/personen');
+            header('Location: /mpa_2021_Olivier/rechnungen/personen');
         }
 	}
 
@@ -149,7 +149,7 @@ INNER JOIN rechnung ON rechnung.fk_personenId = personen.id');
 
             $rechnungen->createBill($titel, $beschreibung, $betrag, $person, $datei, $datum, $status);
 
-            header('Location: http://localhost/mpa_2021_Olivier/rechnungen/rechnungen');
+            header('Location: /mpa_2021_Olivier/rechnungen/rechnungen');
         }
 	}
 
@@ -174,7 +174,7 @@ INNER JOIN rechnung ON rechnung.fk_personenId = personen.id');
 
             $rechnungen->changePerson($namen, $adresse, $telefonnummer, $email, $id);
 
-            header('Location: http://localhost/mpa_2021_Olivier/rechnungen/personen');
+            header('Location: /mpa_2021_Olivier/rechnungen/personen');
         }else{
             $statement = $pdo->prepare('SELECT * FROM personen WHERE id = :id');
             $statement->bindParam(':id', $id);
@@ -199,7 +199,7 @@ INNER JOIN rechnung ON rechnung.fk_personenId = personen.id');
 
         $rechnungen->removePerson($id);
         
-        header('Location: http://localhost/mpa_2021_Olivier/rechnungen/personen');
+        header('Location: /mpa_2021_Olivier/rechnungen/personen');
 
         require 'app/Views/personen.view.php';
     }
@@ -226,7 +226,7 @@ INNER JOIN rechnung ON rechnung.fk_personenId = personen.id');
 
             $rechnungen->changeBill($titel, $beschreibung, $betrag, $person, $datum, $id);
 
-            header('Location: http://localhost/mpa_2021_Olivier/rechnungen/rechnungen');
+            header('Location: /mpa_2021_Olivier/rechnungen/rechnungen');
         }else{
             $statement = $pdo->prepare('SELECT * FROM rechnung WHERE id = :id');
             $statement->bindParam(':id', $id);
@@ -259,7 +259,7 @@ INNER JOIN rechnung ON rechnung.fk_personenId = personen.id');
 
         $rechnungen->removeBill($id);
         
-        header('Location: http://localhost/mpa_2021_Olivier/rechnungen/rechnungen');
+        header('Location: /mpa_2021_Olivier/rechnungen/rechnungen');
 
         require 'app/Views/rechnungen.view.php';
     }
@@ -290,7 +290,7 @@ INNER JOIN rechnung ON rechnung.fk_personenId = personen.id');
 
         $rechnungen->addReminder($titel, $datum, $id);
 
-        header('Location: http://localhost/mpa_2021_Olivier/rechnungen/rechnungen');
+        header('Location: /mpa_2021_Olivier/rechnungen/rechnungen');
     }
 
     public function editReminder(){
@@ -312,7 +312,7 @@ INNER JOIN rechnung ON rechnung.fk_personenId = personen.id');
 
             $rechnungen->changeReminder($titel, $datum, $id);
 
-            header('Location: http://localhost/mpa_2021_Olivier/rechnungen/uebersicht');
+            header('Location: /mpa_2021_Olivier/rechnungen/uebersicht');
         }else{
             $statement = $pdo->prepare('SELECT * FROM mahnung WHERE id = :id');
             $statement->bindParam(':id', $id);
@@ -337,7 +337,7 @@ INNER JOIN rechnung ON rechnung.fk_personenId = personen.id');
 
         $rechnungen->removeReminder($id);
         
-        header('Location: http://localhost/mpa_2021_Olivier/rechnungen/uebersicht');
+        header('Location: /mpa_2021_Olivier/rechnungen/uebersicht');
 
         require 'app/Views/welcome.view.php';
     }
@@ -357,7 +357,7 @@ INNER JOIN rechnung ON rechnung.fk_personenId = personen.id');
 
         $rechnungen->begleichen($id);
 
-        header('Location: http://localhost/mpa_2021_Olivier/rechnungen/rechnungen');
+        header('Location: /mpa_2021_Olivier/rechnungen/rechnungen');
     }
 
     public function uebersichtRechnung(){
