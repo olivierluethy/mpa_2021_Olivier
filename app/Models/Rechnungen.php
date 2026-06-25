@@ -41,7 +41,9 @@ class Rechnungen
             $isValid = false;
         }
 
-		if (preg_match('/[^a-zA-Z]/', $namen)){
+		// Name muss vorhanden sein und darf nur aus Buchstaben (inkl. Umlaute/Akzente),
+		// Leerzeichen, Bindestrich, Apostroph oder Punkt bestehen.
+		if (trim($namen) === '' || preg_match('/[^\p{L}\s.\'-]/u', $namen)){
 			$isValid = false;
 		}
 
