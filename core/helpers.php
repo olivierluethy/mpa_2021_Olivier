@@ -18,6 +18,22 @@ function post(string $key, $default = '')
 }
 
 /**
+ * Formatiert ein Datum einheitlich im Schweizer Format TT.MM.JJJJ.
+ * Akzeptiert YYYY-MM-DD, Datetime-Strings etc. Leere Werte ergeben ''.
+ */
+function formatDate($value): string
+{
+    if ($value === null || $value === '' || $value === '0000-00-00') {
+        return '';
+    }
+    try {
+        return (new DateTime($value))->format('d.m.Y');
+    } catch (Exception $e) {
+        return (string) $value;
+    }
+}
+
+/**
  * Stellt eine Verbindung zur Datenbank her und gibt die
  * Datenbankverbindung als PDO zurück.
  */
