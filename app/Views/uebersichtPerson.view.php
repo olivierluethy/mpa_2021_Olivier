@@ -30,7 +30,7 @@ foreach($rechnung as $rechnungs){
     
     <link rel="shortcut icon" href="../images/icon.png">
     <meta name="author" content="Olivier Luethy">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
 
