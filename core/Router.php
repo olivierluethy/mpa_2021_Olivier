@@ -31,12 +31,12 @@ class Router
             if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                 echo "<script>setTimeout(function()
                 {
-                    window.location.href='/mpa_2021_Olivier/rechnungen/login';
+                    window.location.href='/rechnungen/login';
                 },0);</script>";
             }else{
                 echo "<script>setTimeout(function()
                 {
-                    window.location.href='/mpa_2021_Olivier/rechnungen/uebersicht';
+                    window.location.href='/rechnungen/uebersicht';
                 },0);</script>";
             }
         }
@@ -49,12 +49,12 @@ class Router
             if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                 echo "<script>setTimeout(function()
                 {
-                    window.location.href='/mpa_2021_Olivier/rechnungen/login';
+                    window.location.href='/rechnungen/login';
                 },0);</script>";
             }else{
                 echo "<script>setTimeout(function()
                 {
-                    window.location.href='/mpa_2021_Olivier/rechnungen/uebersicht';
+                    window.location.href='/rechnungen/uebersicht';
                 },0);</script>";
             }
         }

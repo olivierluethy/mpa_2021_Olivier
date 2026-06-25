@@ -10,7 +10,6 @@ RUN a2enmod rewrite
 COPY docker/apache/app.conf /etc/apache2/conf-available/app.conf
 RUN a2enconf app
 
-# The app is served from a sub-path so its relative asset/link paths
-# (../public, ../images, ../rechnungen/...) resolve exactly like the original.
+# The app is served from the web root (no project-name path segment).
 # The actual code is bind-mounted here via docker-compose.
-WORKDIR /var/www/html/mpa_2021_Olivier
+WORKDIR /var/www/html

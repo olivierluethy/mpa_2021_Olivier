@@ -15,7 +15,7 @@ mock data in `docker/initdb/02-mock-data.sql`).
 
 | What        | URL                                                            |
 |-------------|----------------------------------------------------------------|
-| Web app     | http://localhost:8092/mpa_2021_Olivier/rechnungen/login        |
+| Web app     | http://localhost:8092/rechnungen/login                         |
 | phpMyAdmin  | http://localhost:8095                                          |
 | MariaDB     | `localhost:3399` (for external DB tools)                        |
 

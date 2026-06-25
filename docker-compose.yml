@@ -1,6 +1,6 @@
 # Mini PA – full Docker stack: web app + MariaDB + phpMyAdmin
 #
-#   App:        http://localhost:8092/mpa_2021_Olivier/rechnungen/login
+#   App:        http://localhost:8092/rechnungen/login
 #   phpMyAdmin: http://localhost:8095   (server: db,  user: root / pass: root)
 #   MariaDB:    localhost:3399          (for external DB tools, optional)
 #
@@ -16,7 +16,7 @@ services:
       DB_PASS: root
     volumes:
       # Live bind-mount: edit code on the host, refresh the browser.
-      - .:/var/www/html/mpa_2021_Olivier
+      - .:/var/www/html
     depends_on:
       db:
         condition: service_healthy
