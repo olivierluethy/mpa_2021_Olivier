@@ -1,4 +1,17 @@
-# Mini PA 2021 — Rechnungsverwaltung
+<div align="center">
+  <img src="images/icon.png" alt="Rechnungsverwaltung logo" width="140" />
+  <h1>Mini PA 2021 — Rechnungsverwaltung</h1>
+  <p><b>An invoice and reminder management web app.</b><br/>Manages people, their invoices (<i>Rechnungen</i>) and payment reminders (<i>Mahnungen</i>), with login and full add/edit/delete.</p>
+  <p>
+    <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg"></a>
+    <img alt="PHP" src="https://img.shields.io/badge/PHP-777BB4?logo=php&logoColor=white">
+    <img alt="MySQL" src="https://img.shields.io/badge/MySQL-4479A1?logo=mysql&logoColor=white">
+    <img alt="Docker" src="https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white">
+    <img alt="Apache" src="https://img.shields.io/badge/Apache-D22128?logo=apache&logoColor=white">
+  </p>
+</div>
+
+---
 
 A small invoice and reminder management web app ("Meine Mini PA") built as a
 2021 mini project assignment (Mini-Projektarbeit). It manages people, their
@@ -60,3 +73,12 @@ docker/              Docker init SQL + Apache config
 mockup/              Diagrams (class, ERM, use case, folder structure)
 doku/                Project documentation
 ```
+
+## License
+
+Released under the [MIT License](LICENSE) © 2026 Olivier Lüthy. You're free to use, modify and distribute this
+software, including commercially, as long as the copyright notice and license are included.
+
+## Author
+
+Built by **Olivier Lüthy** — [GitHub](https://github.com/olivierluethy).
